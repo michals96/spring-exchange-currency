@@ -13,8 +13,13 @@ public class CurrencyExchangeController {
 
         CurrencyExchange currencyExchange = new CurrencyExchange(counter.incrementAndGet(), requestParams.get("firstCurrency"), requestParams.get("secondCurrency"));
 
-        currencyExchange.converter();
-
+        try
+        {
+            currencyExchange.converter();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         return currencyExchange.responseString();
     }
 }
