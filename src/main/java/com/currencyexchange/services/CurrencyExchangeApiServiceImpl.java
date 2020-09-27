@@ -7,21 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import javax.money.NumberValue;
 import java.io.IOException;
 
-@Service("currencyExchangeService")
-public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
+@Service("currencyExchangeApiService")
+public class CurrencyExchangeApiServiceImpl implements CurrencyExchangeService {
 
     @Autowired
-    @Qualifier("javaCurrencyExchangeRepository")
+    @Qualifier("javaCurrencyExchangeApiRepository")
     private CurrencyExchangeRepository currencyExchangeRepository;
 
     @Override
     public CurrencyExchange convert(String sourceCurrency, String targetCurrency, Double amount) throws InterruptedException, JSONException, IOException {
-
-        NumberValue factor = (NumberValue) this.currencyExchangeRepository.calculate(sourceCurrency, targetCurrency);
-        Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
+        Double factor = (Double) this.currencyExchangeRepository.calculate(sourceCurrency, targetCurrency);
+        Double convertedAmount = factor * amount;
 
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount);
     }

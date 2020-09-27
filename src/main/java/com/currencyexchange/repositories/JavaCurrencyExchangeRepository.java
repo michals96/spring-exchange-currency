@@ -1,5 +1,6 @@
 package com.currencyexchange.repositories;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import javax.money.NumberValue;
@@ -8,6 +9,7 @@ import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.MonetaryConversions;
 
 @Repository
+@Component("javaCurrencyExchangeRepository")
 public class JavaCurrencyExchangeRepository implements CurrencyExchangeRepository{
 
     @Override
