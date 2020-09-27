@@ -28,9 +28,4 @@ public class CurrencyExchangeController {
         CurrencyExchange currencyExchange = currencyExchangeApiService.convert(sourceCurrency, targetCurrency, amount);
         return currencyExchange;
     }
-
 }
-
-
-
-

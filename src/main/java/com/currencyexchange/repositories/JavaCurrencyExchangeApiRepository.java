@@ -36,7 +36,7 @@ public class JavaCurrencyExchangeApiRepository implements CurrencyExchangeReposi
         String courseStr = obj.getJSONObject("rates").getString(targetCurrency);
 
         return Double.parseDouble(courseStr);*/
-        
+
         return 10.0;
     }
 }
