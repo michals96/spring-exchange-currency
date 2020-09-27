@@ -18,12 +18,7 @@ public class CurrencyExchangeController {
         CurrencyExchange currencyExchange = currencyExchangeService.convert(sourceCurrency, targetCurrency, amount);
         return currencyExchange;
     }
-    /*
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getBazz(@PathVariable String id){
-        return new ResponseEntity<>(new Bazz(id, "Bazz"+id), HttpStatus.OK);
-    }
-     */
+
 }
 
 
