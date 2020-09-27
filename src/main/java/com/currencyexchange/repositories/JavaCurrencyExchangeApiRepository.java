@@ -21,7 +21,7 @@ public class JavaCurrencyExchangeApiRepository implements CurrencyExchangeReposi
     @Override
     public Double calculate(String sourceCurrency, String targetCurrency) throws IOException, InterruptedException, JSONException {
 
-        HttpClient client = HttpClient.newHttpClient();
+        /* HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(buildQuery(sourceCurrency, targetCurrency)))
@@ -35,6 +35,8 @@ public class JavaCurrencyExchangeApiRepository implements CurrencyExchangeReposi
 
         String courseStr = obj.getJSONObject("rates").getString(targetCurrency);
 
-        return Double.parseDouble(courseStr);
+        return Double.parseDouble(courseStr);*/
+        
+        return 10.0;
     }
 }

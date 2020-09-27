@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CurrencyExchangeController {
 
-    private final CurrencyExchangeService currencyExchangeService;
+    @Autowired
+    @Qualifier("currencyExchangeService")
+    private CurrencyExchangeService currencyExchangeService;
 
-    public CurrencyExchangeController(CurrencyExchangeService currencyExchangeService) {
-        this.currencyExchangeService = currencyExchangeService;
-    }
+    @Autowired
+    @Qualifier("currencyExchangeApiService")
+    private CurrencyExchangeService currencyExchangeApiService;
 
     @GetMapping(value = "/currencyExchange/{sourceCurrency}/{targetCurrency}/{amount}")
     public CurrencyExchange currencyExchange( @PathVariable String sourceCurrency, @PathVariable String targetCurrency, @PathVariable Double amount) throws Exception {
@@ -23,7 +25,7 @@ public class CurrencyExchangeController {
 
     @GetMapping(value = "/currencyExchangeApi/{sourceCurrency}/{targetCurrency}/{amount}")
     public CurrencyExchange currencyExchangeApi( @PathVariable String sourceCurrency, @PathVariable String targetCurrency, @PathVariable Double amount) throws Exception {
-        CurrencyExchange currencyExchange = currencyExchangeService.convert(sourceCurrency, targetCurrency, amount);
+        CurrencyExchange currencyExchange = currencyExchangeApiService.convert(sourceCurrency, targetCurrency, amount);
         return currencyExchange;
     }
 
