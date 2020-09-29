@@ -10,33 +10,55 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import org.json.*;
 
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
+import javax.money.NumberValue;
+
 @Repository
 @Component("javaCurrencyExchangeApiRepository")
 public class JavaCurrencyExchangeApiRepository implements CurrencyExchangeRepository{
+
+    private HttpClient client;
+
+    public JavaCurrencyExchangeApiRepository(){
+        this.client = HttpClient.newHttpClient();
+    }
 
     public String buildQuery(String sourceCurrency, String targetCurrency){
         return "https://api.exchangeratesapi.io/latest?base=" + sourceCurrency + "&symbols=" + targetCurrency;
     }
 
     @Override
-    public Double calculate(String sourceCurrency, String targetCurrency) throws IOException, InterruptedException, JSONException {
+    public NumberValue calculate(String sourceCurrency, String targetCurrency){
+        try
+        {
+            java.lang.System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
 
-        /* HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(buildQuery(sourceCurrency, targetCurrency)))
+                    .build();
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(buildQuery(sourceCurrency, targetCurrency)))
-                .build();
+            this.client = HttpClient.newHttpClient();
 
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
 
-        String jsonString = response.body();
-        JSONObject obj = new JSONObject(jsonString);
+            this.client = null;
 
-        String courseStr = obj.getJSONObject("rates").getString(targetCurrency);
+            String jsonString = response.body();
+            JSONObject obj = new JSONObject(jsonString);
 
-        return Double.parseDouble(courseStr);*/
+            String courseStr = obj.getJSONObject("rates").getString(targetCurrency);
 
-        return 10.0;
+            MonetaryAmount monetaryAmount = Monetary.getDefaultAmountFactory().setNumber(Double.parseDouble(courseStr)).setCurrency(targetCurrency).create();
+
+            return monetaryAmount.getNumber();
+        }
+        catch (IOException | InterruptedException | IllegalArgumentException | JSONException e )
+        {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

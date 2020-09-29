@@ -2,20 +2,19 @@ package com.currencyexchange.controllers;
 
 import com.currencyexchange.entities.CurrencyExchange;
 import com.currencyexchange.services.CurrencyExchangeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class CurrencyExchangeController {
 
-    @Autowired
-    @Qualifier("currencyExchangeService")
-    private CurrencyExchangeService currencyExchangeService;
+    private final CurrencyExchangeService currencyExchangeService;
 
-    @Autowired
-    @Qualifier("currencyExchangeApiService")
-    private CurrencyExchangeService currencyExchangeApiService;
+    public CurrencyExchangeController(CurrencyExchangeService currencyExchangeService)
+    {
+        this.currencyExchangeService = currencyExchangeService;
+    }
 
     @GetMapping(value = "/currencyExchange/{sourceCurrency}/{targetCurrency}/{amount}")
     public CurrencyExchange currencyExchange( @PathVariable String sourceCurrency, @PathVariable String targetCurrency, @PathVariable Double amount) throws Exception {
@@ -24,8 +23,8 @@ public class CurrencyExchangeController {
     }
 
     @GetMapping(value = "/currencyExchangeApi/{sourceCurrency}/{targetCurrency}/{amount}")
-    public CurrencyExchange currencyExchangeApi( @PathVariable String sourceCurrency, @PathVariable String targetCurrency, @PathVariable Double amount) throws Exception {
-        CurrencyExchange currencyExchange = currencyExchangeApiService.convert(sourceCurrency, targetCurrency, amount);
+    public Map<String, CurrencyExchange> currencyExchangeApi(@PathVariable String sourceCurrency, @PathVariable String targetCurrency, @PathVariable Double amount) throws Exception {
+        Map<String, CurrencyExchange> currencyExchange = currencyExchangeService.convertWithAllApi(sourceCurrency, targetCurrency, amount);
         return currencyExchange;
     }
 }

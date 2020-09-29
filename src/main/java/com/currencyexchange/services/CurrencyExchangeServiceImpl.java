@@ -2,27 +2,48 @@ package com.currencyexchange.services;
 
 import com.currencyexchange.entities.CurrencyExchange;
 import com.currencyexchange.repositories.CurrencyExchangeRepository;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.money.NumberValue;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service("currencyExchangeService")
 public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
+    private final List<CurrencyExchangeRepository> currencyExchangeRepository;
+
     @Autowired
-    @Qualifier("javaCurrencyExchangeRepository")
-    private CurrencyExchangeRepository currencyExchangeRepository;
+    CurrencyExchangeServiceImpl( List<CurrencyExchangeRepository> currencyExchangeRepository)
+    {
+        this.currencyExchangeRepository = currencyExchangeRepository;
+    }
 
     @Override
-    public CurrencyExchange convert(String sourceCurrency, String targetCurrency, Double amount) throws InterruptedException, JSONException, IOException {
+    public CurrencyExchange convert(String sourceCurrency, String targetCurrency, Double amount)  {
 
-        NumberValue factor = (NumberValue) this.currencyExchangeRepository.calculate(sourceCurrency, targetCurrency);
+        NumberValue factor = this.currencyExchangeRepository.get(0).calculate(sourceCurrency, targetCurrency);
         Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
 
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount);
+    }
+
+    @Override
+    public Map<String, CurrencyExchange> convertWithAllApi(String sourceCurrency, String targetCurrency, Double amount) {
+
+        return this.currencyExchangeRepository.stream().map(repository -> {
+            NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
+            Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
+            String repositoryStr = repository.toString();
+            CurrencyExchange currencyExchange = new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount);
+            List myList = new ArrayList();
+            myList.add(repositoryStr);
+            myList.add(currencyExchange);
+            return myList;
+        }).collect(Collectors.toMap(list -> (String)list.get(0), list -> (CurrencyExchange)list.get(1)));
     }
 }

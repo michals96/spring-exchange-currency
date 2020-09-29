@@ -1,8 +1,7 @@
 package com.currencyexchange.repositories;
 
-import org.json.JSONException;
-import java.io.IOException;
+import javax.money.NumberValue;
 
-public interface CurrencyExchangeRepository<T> {
-    T calculate(String sourceCurrency, String targetCurrency) throws IOException, InterruptedException, JSONException;
+public interface CurrencyExchangeRepository {
+    NumberValue calculate(String sourceCurrency, String targetCurrency);
 }
