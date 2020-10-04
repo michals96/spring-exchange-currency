@@ -9,10 +9,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.money.NumberValue;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service("currencyExchangeService")
 public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
@@ -50,21 +49,25 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     }
 
     @Override
-    public CurrencyExchange convertWithApi(String sourceCurrency, String targetCurrency, Double amount, Class<?> clazz) {
+    public Map<String, CurrencyExchange> convertWithApi(String sourceCurrency, String targetCurrency, Double amount, Class<?> clazz) {
 
         Map<String, CurrencyExchange> servicesMap = convertWithAllApi(sourceCurrency, targetCurrency, amount);
+
         String className = clazz.getSimpleName();
-        
-        final String repositoryServiceName = JavaCurrencyExchangeRepository.class.getSimpleName();
-        final String apiRepositoryServiceName = JavaCurrencyExchangeApiRepository.class.getSimpleName();
+        String repositoryServiceName = JavaCurrencyExchangeRepository.class.getSimpleName();
+        String apiRepositoryServiceName = JavaCurrencyExchangeApiRepository.class.getSimpleName();
 
         if(className.equals(repositoryServiceName))
         {
-            return (CurrencyExchange) servicesMap.values().toArray()[0];
+            return Stream.of(new Object[][] {
+                    {(String)servicesMap.keySet().toArray()[0],(CurrencyExchange) servicesMap.values().toArray()[0]},
+            }).collect(Collectors.toMap(data -> (String) data[0], data -> (CurrencyExchange) data[1]));
         }
         else if(className.equals(apiRepositoryServiceName))
         {
-            return (CurrencyExchange) servicesMap.values().toArray()[1];
+            return Stream.of(new Object[][] {
+                    {(String)servicesMap.keySet().toArray()[1],(CurrencyExchange) servicesMap.values().toArray()[1]},
+            }).collect(Collectors.toMap(data -> (String) data[0], data -> (CurrencyExchange) data[1]));
         }
         else return null;
     }
