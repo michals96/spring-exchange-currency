@@ -10,7 +10,6 @@ import java.util.Map;
 public class CurrencyExchangeController {
 
     private final CurrencyExchangeService currencyExchangeService;
-    Class<?> clazz;
 
     public CurrencyExchangeController(CurrencyExchangeService currencyExchangeService)
     {
