@@ -2,6 +2,8 @@ package com.currencyexchange.services;
 
 import com.currencyexchange.entities.CurrencyExchange;
 import com.currencyexchange.repositories.CurrencyExchangeRepository;
+import com.currencyexchange.repositories.JavaCurrencyExchangeApiRepository;
+import com.currencyexchange.repositories.JavaCurrencyExchangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -45,5 +47,16 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
             myList.add(currencyExchange);
             return myList;
         }).collect(Collectors.toMap(list -> (String)list.get(0), list -> (CurrencyExchange)list.get(1)));
+    }
+
+    @Override
+    public CurrencyExchange convertWithApi(String sourceCurrency, String targetCurrency, Double amount, Class<?> clazz) {
+        Map<String, CurrencyExchange> servicesMap = convertWithAllApi(sourceCurrency, targetCurrency, amount);
+
+        if( clazz.getSimpleName().equals(JavaCurrencyExchangeRepository.class.getSimpleName()))
+        {
+            return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, 120.0);
+        }
+        else return null;
     }
 }
