@@ -1,8 +1,7 @@
 package com.currencyexchange.services;
 
 import com.currencyexchange.entities.CurrencyExchange;
-import org.json.JSONException;
-import java.io.IOException;
+
 import java.util.Map;
 
 public interface CurrencyExchangeService {

@@ -5,7 +5,6 @@ import com.currencyexchange.repositories.CurrencyExchangeRepository;
 import com.currencyexchange.repositories.JavaCurrencyExchangeApiRepository;
 import com.currencyexchange.repositories.JavaCurrencyExchangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.money.NumberValue;
@@ -60,13 +59,13 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         if(className.equals(repositoryServiceName))
         {
             return Stream.of(new Object[][] {
-                    {(String)servicesMap.keySet().toArray()[0],(CurrencyExchange) servicesMap.values().toArray()[0]},
+                    {servicesMap.keySet().toArray()[0], servicesMap.values().toArray()[0]},
             }).collect(Collectors.toMap(data -> (String) data[0], data -> (CurrencyExchange) data[1]));
         }
         else if(className.equals(apiRepositoryServiceName))
         {
             return Stream.of(new Object[][] {
-                    {(String)servicesMap.keySet().toArray()[1],(CurrencyExchange) servicesMap.values().toArray()[1]},
+                    {servicesMap.keySet().toArray()[1], servicesMap.values().toArray()[1]},
             }).collect(Collectors.toMap(data -> (String) data[0], data -> (CurrencyExchange) data[1]));
         }
         else return null;
