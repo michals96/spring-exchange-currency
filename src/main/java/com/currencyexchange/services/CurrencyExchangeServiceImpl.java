@@ -53,18 +53,18 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     public CurrencyExchange convertWithApi(String sourceCurrency, String targetCurrency, Double amount, Class<?> clazz) {
 
         Map<String, CurrencyExchange> servicesMap = convertWithAllApi(sourceCurrency, targetCurrency, amount);
-
         String className = clazz.getSimpleName();
+        
         final String repositoryServiceName = JavaCurrencyExchangeRepository.class.getSimpleName();
         final String apiRepositoryServiceName = JavaCurrencyExchangeApiRepository.class.getSimpleName();
 
         if(className.equals(repositoryServiceName))
         {
-            return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, 120.0);
+            return (CurrencyExchange) servicesMap.values().toArray()[0];
         }
         else if(className.equals(apiRepositoryServiceName))
         {
-            return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, 150.0);
+            return (CurrencyExchange) servicesMap.values().toArray()[1];
         }
         else return null;
     }
