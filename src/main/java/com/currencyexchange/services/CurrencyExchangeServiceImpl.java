@@ -2,15 +2,15 @@ package com.currencyexchange.services;
 
 import com.currencyexchange.entities.CurrencyExchange;
 import com.currencyexchange.repositories.CurrencyExchangeRepository;
+import com.currencyexchange.repositories.JavaCurrencyExchangeApiRepository;
+import com.currencyexchange.repositories.JavaCurrencyExchangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.money.NumberValue;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service("currencyExchangeService")
 public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
@@ -45,5 +45,29 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
             myList.add(currencyExchange);
             return myList;
         }).collect(Collectors.toMap(list -> (String)list.get(0), list -> (CurrencyExchange)list.get(1)));
+    }
+
+    @Override
+    public Map<String, CurrencyExchange> convertWithApi(String sourceCurrency, String targetCurrency, Double amount, Class<?> clazz) {
+
+        Map<String, CurrencyExchange> servicesMap = convertWithAllApi(sourceCurrency, targetCurrency, amount);
+
+        String className = clazz.getSimpleName();
+        String repositoryServiceName = JavaCurrencyExchangeRepository.class.getSimpleName();
+        String apiRepositoryServiceName = JavaCurrencyExchangeApiRepository.class.getSimpleName();
+
+        if(className.equals(repositoryServiceName))
+        {
+            return Stream.of(new Object[][] {
+                    {servicesMap.keySet().toArray()[0], servicesMap.values().toArray()[0]},
+            }).collect(Collectors.toMap(data -> (String) data[0], data -> (CurrencyExchange) data[1]));
+        }
+        else if(className.equals(apiRepositoryServiceName))
+        {
+            return Stream.of(new Object[][] {
+                    {servicesMap.keySet().toArray()[1], servicesMap.values().toArray()[1]},
+            }).collect(Collectors.toMap(data -> (String) data[0], data -> (CurrencyExchange) data[1]));
+        }
+        else return null;
     }
 }
