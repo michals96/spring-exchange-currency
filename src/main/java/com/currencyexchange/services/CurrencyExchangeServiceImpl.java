@@ -49,8 +49,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     @Override
     public CurrencyExchange convertWithApi(String sourceCurrency, String targetCurrency, Double amount, Class<?> clazz) {
 
-
-
+        /* to practice: Monads, Spring databases, Optionals
         Optional<String> name = Optional.of("Hello world");
         Stream<String> stream = name.stream();
 
@@ -58,7 +57,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         Stream<Object> objectStream = stringOptional.flatMap(name -> {
             return null;
-        });
+        });*/
 
         return this.repositories.stream().filter(repository -> repository.getClass().equals(clazz)).findFirst().map(repository -> {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
