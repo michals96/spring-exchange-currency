@@ -29,7 +29,7 @@ public class CurrencyExchangeController {
     }
 
     @GetMapping(value = "/currencyExchangeApi/{serviceType}/{sourceCurrency}/{targetCurrency}/{amount}")
-    public Map<String, CurrencyExchange> currencyExchangeApi(@PathVariable String serviceType,
+    public CurrencyExchange currencyExchangeApi(@PathVariable String serviceType,
                                                 @PathVariable String sourceCurrency,
                                                              @PathVariable String targetCurrency,
                                                              @PathVariable Double amount) throws Exception {
