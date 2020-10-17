@@ -2,16 +2,12 @@ package com.currencyexchange;
 
 import com.currencyexchange.entities.Customer;
 import com.currencyexchange.repositories.CustomerRepository;
+import com.currencyexchange.repositories.JavaCurrencyExchangeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @SpringBootApplication
 @Slf4j
@@ -19,12 +15,14 @@ public class CurrencyExchangeApplication implements CommandLineRunner {
 	@Autowired
 	CustomerRepository repository;
 
+	@Autowired
+	JavaCurrencyExchangeRepository exchangeRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(CurrencyExchangeApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
+	public void testCustomerDB(){
 		// save a few customers
 		repository.save(new Customer("Jack", "Bauer"));
 		repository.save(new Customer("Chloe", "O'Brian"));
@@ -55,5 +53,13 @@ public class CurrencyExchangeApplication implements CommandLineRunner {
 		});
 
 		log.info("");
+	}
+	public void testExchangeDB(){
+
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		testCustomerDB();
 	}
 }
