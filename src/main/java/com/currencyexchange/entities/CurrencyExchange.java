@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -22,4 +23,6 @@ public class CurrencyExchange {
     private String firstCurrency, secondCurrency;
     @NonNull
     private Double amount, convertedAmount, factor;
+    @NonNull
+    private LocalDate date;
 }

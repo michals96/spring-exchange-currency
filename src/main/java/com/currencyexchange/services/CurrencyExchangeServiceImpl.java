@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 
 import javax.money.NumberValue;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,12 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         NumberValue factor = this.repositories.get(0).calculate(sourceCurrency, targetCurrency);
         Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
+        LocalDate date = LocalDate.now();
 
         // The code below is to hack servlet exception while refreshing the page.
         // Double convertedAmount = Double.parseDouble("1.0") * amount;
 
-        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()));
+        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), date);
     }
 
     @Override
@@ -41,7 +43,8 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
             Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
             String repositoryStr = repository.toString();
-            CurrencyExchange currencyExchange = new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()));
+            LocalDate date = LocalDate.now();
+            CurrencyExchange currencyExchange = new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), date);
             List myList = new ArrayList();
             myList.add(repositoryStr);
             myList.add(currencyExchange);
@@ -58,7 +61,8 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         return this.repositories.stream().filter(repository -> ClassUtils.getUserClass(repository).equals(clazz)).findFirst().map(repository -> {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
             Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
-            return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()));
+            LocalDate date = LocalDate.now();
+            return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), date);
         }).orElse(null);
     }
 }
