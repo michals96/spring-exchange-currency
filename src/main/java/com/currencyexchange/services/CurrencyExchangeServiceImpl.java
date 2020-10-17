@@ -2,15 +2,14 @@ package com.currencyexchange.services;
 
 import com.currencyexchange.entities.CurrencyExchange;
 import com.currencyexchange.repositories.CurrencyExchangeRepository;
-import com.currencyexchange.repositories.JavaCurrencyExchangeApiRepository;
-import com.currencyexchange.repositories.JavaCurrencyExchangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.money.NumberValue;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service("currencyExchangeService")
 public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
@@ -48,16 +47,6 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
     @Override
     public CurrencyExchange convertWithApi(String sourceCurrency, String targetCurrency, Double amount, Class<?> clazz) {
-
-        /* to practice: Monads, Spring databases, Optionals
-        Optional<String> name = Optional.of("Hello world");
-        Stream<String> stream = name.stream();
-
-        Stream<Optional<String>> stringOptional = Stream.of(name);
-
-        Stream<Object> objectStream = stringOptional.flatMap(name -> {
-            return null;
-        });*/
 
         return this.repositories.stream().filter(repository -> repository.getClass().equals(clazz)).findFirst().map(repository -> {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
