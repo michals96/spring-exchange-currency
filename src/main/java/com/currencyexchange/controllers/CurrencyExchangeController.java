@@ -1,6 +1,7 @@
 package com.currencyexchange.controllers;
 
 import com.currencyexchange.entities.CurrencyExchange;
+// import com.currencyexchange.entities.Customer;
 import com.currencyexchange.services.CurrencyExchangeService;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ public class CurrencyExchangeController {
 
     public CurrencyExchangeController(CurrencyExchangeService currencyExchangeService)
     {
+         // Customer build = Customer.builder().firstName("one").lastName("sth").id(1).build();
         this.currencyExchangeService = currencyExchangeService;
     }
 
