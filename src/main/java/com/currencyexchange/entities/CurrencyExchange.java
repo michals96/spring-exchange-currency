@@ -1,28 +1,56 @@
 package com.currencyexchange.entities;
 
-import lombok.*;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@RequiredArgsConstructor
-@NoArgsConstructor
-@ToString
-@Builder
-@Entity
 public class CurrencyExchange {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    @NonNull
-    private String firstCurrency, secondCurrency;
-    @NonNull
-    private Double amount, convertedAmount, factor;
-    @NonNull
-    private LocalDate date;
+    private final long id;
+    private final Double amount;
+    private final String firstCurrency;
+    private final String secondCurrency;
+
+    public Double getFactor() {
+        return factor;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setConvertedAmount(Double convertedAmount) {
+        this.convertedAmount = convertedAmount;
+    }
+
+    private final Double factor;
+    private final LocalDate date;
+    public Double convertedAmount;
+
+    public CurrencyExchange(long id, String firstCurrency, String secondCurrency, Double amount, Double convertedAmount, Double factor, LocalDate date) {
+        this.id = id;
+        this.amount = amount;
+        this.firstCurrency = firstCurrency;
+        this.secondCurrency = secondCurrency;
+        this.factor = factor;
+        this.date = date;
+        this.convertedAmount = convertedAmount;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getFirstCurrency(){
+        return firstCurrency;
+    }
+
+    public String getSecondCurrency(){
+        return secondCurrency;
+    }
+
+    public Double getAmount(){
+        return amount;
+    }
+
+    public Double getConvertedAmount(){
+        return convertedAmount;
+    }
 }
