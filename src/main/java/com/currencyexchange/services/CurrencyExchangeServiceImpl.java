@@ -31,7 +31,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         // The code below is to hack servlet exception while refreshing the page.
         // Double convertedAmount = Double.parseDouble("1.0") * amount;
 
-        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount);
+        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
             Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
             String repositoryStr = repository.toString();
-            CurrencyExchange currencyExchange = new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount);
+            CurrencyExchange currencyExchange = new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()));
             List myList = new ArrayList();
             myList.add(repositoryStr);
             myList.add(currencyExchange);
@@ -58,7 +58,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         return this.repositories.stream().filter(repository -> ClassUtils.getUserClass(repository).equals(clazz)).findFirst().map(repository -> {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
             Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
-            return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount);
+            return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()));
         }).orElse(null);
     }
 }

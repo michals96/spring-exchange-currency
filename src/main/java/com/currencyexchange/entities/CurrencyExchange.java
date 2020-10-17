@@ -19,12 +19,7 @@ public class CurrencyExchange {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @NonNull
-    private String firstCurrency;
+    private String firstCurrency, secondCurrency;
     @NonNull
-    private String secondCurrency;
-    @NonNull
-    private Double amount;
-    @NonNull
-    public Double convertedAmount;
-
+    private Double amount, convertedAmount, factor;
 }

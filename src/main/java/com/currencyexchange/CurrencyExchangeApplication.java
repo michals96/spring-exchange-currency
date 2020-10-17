@@ -1,6 +1,8 @@
 package com.currencyexchange;
 
+import com.currencyexchange.entities.CurrencyExchange;
 import com.currencyexchange.entities.Customer;
+import com.currencyexchange.repositories.CrudCurrencyExchangeRepository;
 import com.currencyexchange.repositories.CustomerRepository;
 import com.currencyexchange.repositories.JavaCurrencyExchangeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -16,50 +18,42 @@ public class CurrencyExchangeApplication implements CommandLineRunner {
 	CustomerRepository repository;
 
 	@Autowired
-	JavaCurrencyExchangeRepository exchangeRepository;
+	CrudCurrencyExchangeRepository exchangeRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CurrencyExchangeApplication.class, args);
 	}
 
 	public void testCustomerDB(){
-		// save a few customers
 		repository.save(new Customer("Jack", "Bauer"));
 		repository.save(new Customer("Chloe", "O'Brian"));
 		repository.save(new Customer("Kim", "Bauer"));
-		repository.save(new Customer("David", "Palmer"));
-		repository.save(new Customer("Michelle", "Dessler"));
 
 		// fetch all customers
-		log.info("Customers found with findAll():");
-		log.info("-------------------------------");
 		for (Customer customer : repository.findAll()) {
 			log.info(customer.toString());
 		}
 		log.info("");
 
-		// fetch an individual customer by ID
+		// fetch an individual customer by ID == 1
 		Customer customer = repository.findById(1L);
-		log.info("Customer found with findById(1L):");
-		log.info("--------------------------------");
 		log.info(customer.toString());
 		log.info("");
 
-		// fetch customers by last name
-		log.info("Customer found with findByLastName('Bauer'):");
-		log.info("--------------------------------------------");
+		// fetch customers by last name == bauer
 		repository.findByLastName("Bauer").forEach(bauer -> {
 			log.info(bauer.toString());
 		});
 
-		log.info("");
 	}
 	public void testExchangeDB(){
-
+		exchangeRepository.save(new CurrencyExchange("USD", "PLN", 100.0, 200.0, 3.0));
+		exchangeRepository.save(new CurrencyExchange("GBP", "USD", 300.0, 600.0, 1.0));
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
 		testCustomerDB();
+		testExchangeDB();
 	}
 }
