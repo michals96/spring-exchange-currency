@@ -10,7 +10,7 @@ import javax.money.convert.MonetaryConversions;
 
 @Repository
 @Component("javaCurrencyExchangeRepository")
-public class JavaCurrencyExchangeRepository implements CurrencyExchangeRepository{
+public class JavaCurrencyExchangeRepository implements CurrencyExchangeRepository {
 
     @Override
     public NumberValue calculate(String sourceCurrency, String targetCurrency) {

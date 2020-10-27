@@ -1,6 +1,8 @@
 package com.currencyexchange.controllers;
 
 import com.currencyexchange.entities.CurrencyExchange;
+import com.currencyexchange.entities.Rate;
+import com.currencyexchange.repositories.RateRepository;
 import com.currencyexchange.services.CurrencyExchangeService;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +13,20 @@ public class CurrencyExchangeController {
 
     private final CurrencyExchangeService currencyExchangeService;
 
-    public CurrencyExchangeController(CurrencyExchangeService currencyExchangeService)
+    private final RateRepository ratesRepository;
+
+    public CurrencyExchangeController(CurrencyExchangeService currencyExchangeService, RateRepository ratesRepository)
     {
         this.currencyExchangeService = currencyExchangeService;
+        this.ratesRepository = ratesRepository;
+    }
+
+    public void addRatesToDatabase(CurrencyExchange currencyExchange){
+        ratesRepository.save(new Rate(currencyExchange.getFirstCurrency(), currencyExchange.getSecondCurrency(), currencyExchange.getFactor(), currencyExchange.getDate()));
+    }
+
+    public Boolean canBeAddedToDB(CurrencyExchange currencyExchange){
+        return ratesRepository.findByCurrenciesAndDate(currencyExchange.getFirstCurrency(), currencyExchange.getSecondCurrency(), currencyExchange.getDate()).isEmpty();
     }
 
     @GetMapping(value = "/currencyExchange/{sourceCurrency}/{targetCurrency}/{amount}")
@@ -33,6 +46,12 @@ public class CurrencyExchangeController {
                                                 @PathVariable String sourceCurrency,
                                                              @PathVariable String targetCurrency,
                                                              @PathVariable Double amount) throws Exception {
-        return currencyExchangeService.convertWithApi(sourceCurrency, targetCurrency, amount, Class.forName("com.currencyexchange.repositories." + serviceType));
+        CurrencyExchange currencyExchange = currencyExchangeService.convertWithApi(sourceCurrency, targetCurrency, amount, Class.forName("com.currencyexchange.repositories." + serviceType));
+
+        if(canBeAddedToDB(currencyExchange)){
+            addRatesToDatabase(currencyExchange);
+        }
+
+        return currencyExchange;
     }
 }

@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.annotation.Bean;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+@EnableSwagger2
 @SpringBootApplication
 @Slf4j
 public class CurrencyExchangeApplication implements CommandLineRunner {
@@ -23,37 +25,40 @@ public class CurrencyExchangeApplication implements CommandLineRunner {
 		SpringApplication.run(CurrencyExchangeApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		// save a few customers
+	public void testCustomerDB(){
 		repository.save(new Customer("Jack", "Bauer"));
 		repository.save(new Customer("Chloe", "O'Brian"));
 		repository.save(new Customer("Kim", "Bauer"));
-		repository.save(new Customer("David", "Palmer"));
-		repository.save(new Customer("Michelle", "Dessler"));
 
-		// fetch all customers
-		log.info("Customers found with findAll():");
-		log.info("-------------------------------");
+		/* fetch all customers
 		for (Customer customer : repository.findAll()) {
 			log.info(customer.toString());
 		}
 		log.info("");
 
-		// fetch an individual customer by ID
+		fetch an individual customer by ID == 1
 		Customer customer = repository.findById(1L);
-		log.info("Customer found with findById(1L):");
-		log.info("--------------------------------");
 		log.info(customer.toString());
 		log.info("");
 
-		// fetch customers by last name
-		log.info("Customer found with findByLastName('Bauer'):");
-		log.info("--------------------------------------------");
+		fetch customers by last name == bauer
 		repository.findByLastName("Bauer").forEach(bauer -> {
 			log.info(bauer.toString());
-		});
+		}); */
 
-		log.info("");
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		testCustomerDB();
+	}
+
+	@Bean
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.select()
+				.apis(RequestHandlerSelectors.basePackage(("com.currencyexchange.controllers")))
+				.paths(PathSelectors.any())
+				.build();
 	}
 }

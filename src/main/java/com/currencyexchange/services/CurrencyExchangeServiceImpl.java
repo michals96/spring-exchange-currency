@@ -4,8 +4,10 @@ import com.currencyexchange.entities.CurrencyExchange;
 import com.currencyexchange.repositories.CurrencyExchangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ClassUtils;
 
 import javax.money.NumberValue;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,10 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         NumberValue factor = this.repositories.get(0).calculate(sourceCurrency, targetCurrency);
         Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
 
-        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount);
+        // The code below is to hack servlet exception while refreshing the page.
+        // Double convertedAmount = Double.parseDouble("1.0") * amount;
+
+        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
 
     @Override
@@ -37,7 +42,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
             Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
             String repositoryStr = repository.toString();
-            CurrencyExchange currencyExchange = new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount);
+            CurrencyExchange currencyExchange = new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
             List myList = new ArrayList();
             myList.add(repositoryStr);
             myList.add(currencyExchange);
@@ -48,10 +53,13 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     @Override
     public CurrencyExchange convertWithApi(String sourceCurrency, String targetCurrency, Double amount, Class<?> clazz) {
 
-        return this.repositories.stream().filter(repository -> repository.getClass().equals(clazz)).findFirst().map(repository -> {
+        // For some reason repositories got wrapped into proxy for instance getClass().getSimpleName() got us
+        // JavaCurrencyExchangeApiRepository$$EnhancerBySpringCGLIB$$96b10576 instead of JavaCurrencyExchangeApiRepository
+        // ClassUtils.getUserClass() got the problem solved
+        return this.repositories.stream().filter(repository -> ClassUtils.getUserClass(repository).equals(clazz)).findFirst().map(repository -> {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
             Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
-            return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount);
+            return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
         }).orElse(null);
     }
 }
