@@ -14,7 +14,6 @@ public class JavaCurrencyExchangeRepository implements CurrencyExchangeRepositor
 
     @Override
     public NumberValue calculate(String sourceCurrency, String targetCurrency) {
-
         /*
         1. Check if those values can be exchanged
             a) Send query to currencies database:

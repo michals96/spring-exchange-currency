@@ -1,24 +1,35 @@
 package com.currencyexchange.entities;
 
-import lombok.*;
+import lombok.NonNull;
+import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.time.LocalDate;
+import javax.persistence.*;
+import java.util.List;
 
-@Data
-@AllArgsConstructor
-@RequiredArgsConstructor
-@NoArgsConstructor
-@ToString
-@Builder
 @Entity
-public class Currency {
+@ToString
+@Table(name="CURRENCY")
+public class Currency{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @NonNull
     private String sourceCurrency, targetCurrency;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="currency", cascade = CascadeType.ALL)
+    @Fetch(value= FetchMode.SELECT)
+    private List<Rate> rates;
+
+    public Currency(){
+    }
+
+    public Currency(String sourceCurrency, String targetCurrency){
+        this.sourceCurrency = sourceCurrency;
+        this.targetCurrency = targetCurrency;
+    }
+
+    public List<Rate> getRates(){
+        return rates;
+    }
 }

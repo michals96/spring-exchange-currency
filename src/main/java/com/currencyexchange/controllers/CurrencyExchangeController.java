@@ -4,11 +4,11 @@ import com.currencyexchange.entities.CurrencyExchange;
 import com.currencyexchange.entities.Rate;
 import com.currencyexchange.repositories.RateRepository;
 import com.currencyexchange.services.CurrencyExchangeService;
-import org.apache.tomcat.jni.Local;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Map;
 
 @RestController

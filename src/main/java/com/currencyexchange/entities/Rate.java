@@ -1,23 +1,15 @@
 package com.currencyexchange.entities;
 
-import lombok.*;
+import lombok.NonNull;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@RequiredArgsConstructor
-@NoArgsConstructor
-@ToString
-@Builder
 @Entity
+@Table(name="RATE")
 public class Rate {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @NonNull
     private String sourceCurrency, targetCurrency;
@@ -25,4 +17,29 @@ public class Rate {
     private Double rate;
     @NonNull
     private LocalDate date;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="currency_id", nullable=false)
+    private Currency currency;
+
+    public Double getRate(){
+        return this.rate;
+    }
+
+    public Rate(){
+    }
+
+    public Rate(String sourceCurrency, String targetCurrency, Double rate, LocalDate date){
+        this.sourceCurrency = sourceCurrency;
+        this.targetCurrency = targetCurrency;
+        this.rate = rate;
+        this.date = date;
+    }
+
+    public Rate(String sourceCurrency, String targetCurrency, Double rate, LocalDate date, Currency currency){
+        this.sourceCurrency = sourceCurrency;
+        this.targetCurrency = targetCurrency;
+        this.rate = rate;
+        this.date = date;
+        this.currency = currency;
+    }
 }
