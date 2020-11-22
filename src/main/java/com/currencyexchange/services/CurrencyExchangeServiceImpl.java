@@ -43,7 +43,6 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
     @Override
     public Map<String, CurrencyExchange> convertWithAllApi(String sourceCurrency, String targetCurrency, Double amount) {
-
         return this.repositories.stream().map(repository -> {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
             Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
@@ -58,10 +57,6 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
     @Override
     public CurrencyExchange convertWithApi(String sourceCurrency, String targetCurrency, Double amount, Class<?> clazz) {
-
-        // For some reason repositories got wrapped into proxy for instance getClass().getSimpleName() got us
-        // JavaCurrencyExchangeApiRepository$$EnhancerBySpringCGLIB$$96b10576 instead of JavaCurrencyExchangeApiRepository
-        // ClassUtils.getUserClass() got the problem solved
         return this.repositories.stream().filter(repository -> ClassUtils.getUserClass(repository).equals(clazz)).findFirst().map(repository -> {
             NumberValue factor = repository.calculate(sourceCurrency, targetCurrency);
             Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
