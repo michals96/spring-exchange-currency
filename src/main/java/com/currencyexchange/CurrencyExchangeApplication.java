@@ -1,6 +1,8 @@
 package com.currencyexchange;
 
+import com.currencyexchange.entities.Currency;
 import com.currencyexchange.entities.Customer;
+import com.currencyexchange.repositories.CurrencyRepository;
 import com.currencyexchange.repositories.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +21,19 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Slf4j
 public class CurrencyExchangeApplication implements CommandLineRunner {
 	@Autowired
-	CustomerRepository repository;
+	CustomerRepository customerRepository;
+
+	@Autowired
+	CurrencyRepository currencyRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CurrencyExchangeApplication.class, args);
 	}
 
 	public void testCustomerDB(){
-		repository.save(new Customer("Jack", "Bauer"));
-		repository.save(new Customer("Chloe", "O'Brian"));
-		repository.save(new Customer("Kim", "Bauer"));
+		customerRepository.save(new Customer("Jack", "Bauer"));
+		customerRepository.save(new Customer("Chloe", "O'Brian"));
+		customerRepository.save(new Customer("Kim", "Bauer"));
 
 		/* fetch all customers
 		for (Customer customer : repository.findAll()) {
@@ -45,12 +50,26 @@ public class CurrencyExchangeApplication implements CommandLineRunner {
 		repository.findByLastName("Bauer").forEach(bauer -> {
 			log.info(bauer.toString());
 		}); */
+	}
 
+	public void fillCurrenciesTable(){
+		currencyRepository.save(new Currency("USD", "PLN"));
+		currencyRepository.save(new Currency("USD", "GBP"));
+		currencyRepository.save(new Currency("PLN", "USD"));
+		currencyRepository.save(new Currency("PLN", "GBP"));
+		currencyRepository.save(new Currency("GBP", "PLN"));
+		currencyRepository.save(new Currency("GBP", "USD"));
+
+		for (Currency currency : currencyRepository.findAll()) {
+			log.info(currency.toString());
+		}
+		log.info("");
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		testCustomerDB();
+		//testCustomerDB();
+		fillCurrenciesTable();
 	}
 
 	@Bean

@@ -14,6 +14,7 @@ public class JavaCurrencyExchangeRepository implements CurrencyExchangeRepositor
 
     @Override
     public NumberValue calculate(String sourceCurrency, String targetCurrency) {
+
         /*
         1. Check if those values can be exchanged
             a) Send query to currencies database:
@@ -22,7 +23,8 @@ public class JavaCurrencyExchangeRepository implements CurrencyExchangeRepositor
         2. Check if those values have rate in Rates table
         3. If in rates: Use Rates
         4. Else: fetch rate and return
-         */
+        */
+
         ExchangeRateProvider exchangeRateProvider = MonetaryConversions.getExchangeRateProvider();
         ExchangeRate rate = exchangeRateProvider.getExchangeRate(sourceCurrency, targetCurrency);
 
