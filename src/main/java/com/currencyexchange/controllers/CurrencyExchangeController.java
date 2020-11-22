@@ -27,9 +27,7 @@ public class CurrencyExchangeController {
         ratesRepository.save(new Rate(currencyExchange.getFirstCurrency(), currencyExchange.getSecondCurrency(), currencyExchange.getFactor(), currencyExchange.getDate()));
     }
 
-    public Boolean ratesExistsInDatabase(String sourceCurrency, String targetCurrency, LocalDate date){
-        return !ratesRepository.findByCurrenciesAndDate(sourceCurrency, targetCurrency, date).isEmpty();
-    }
+
 
     // do usuniecia - mozna bezposrednio z repozytorium skorzystac
     public Double fetchRate(String sourceCurrency, String targetCurrency, LocalDate date){
