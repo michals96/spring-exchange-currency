@@ -15,7 +15,6 @@ import java.util.Map;
 public class CurrencyExchangeController {
 
     private final CurrencyExchangeService currencyExchangeService;
-
     private final RateRepository ratesRepository;
 
     public CurrencyExchangeController(CurrencyExchangeService currencyExchangeService, RateRepository ratesRepository)
@@ -39,7 +38,7 @@ public class CurrencyExchangeController {
 
     @GetMapping(value = "/currencyExchangeNoApi/{sourceCurrency}/{targetCurrency}/{amount}")
     public CurrencyExchange currencyExchangeNoApi( @PathVariable String sourceCurrency, @PathVariable String targetCurrency, @PathVariable Double amount) throws Exception {
-        return currencyExchangeService.convert(sourceCurrency, targetCurrency, amount);
+        return currencyExchangeService.monetaryConvert(sourceCurrency, targetCurrency, amount);
     }
 
     @GetMapping(value = "/currencyExchangeApi/{sourceCurrency}/{targetCurrency}/{amount}")

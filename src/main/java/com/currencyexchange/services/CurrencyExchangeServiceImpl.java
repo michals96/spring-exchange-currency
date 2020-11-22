@@ -29,8 +29,14 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         NumberValue factor = this.repositories.get(0).calculate(sourceCurrency, targetCurrency);
         Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
 
-        // The code below is to hack servlet exception while refreshing the page.
-        // Double convertedAmount = Double.parseDouble("1.0") * amount;
+        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
+    }
+
+    @Override
+    public CurrencyExchange monetaryConvert(String sourceCurrency, String targetCurrency, Double amount) {
+
+        NumberValue factor = this.repositories.get(1).calculate(sourceCurrency, targetCurrency);
+        Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
 
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
