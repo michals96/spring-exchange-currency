@@ -1,15 +1,19 @@
 package com.currencyexchange.entities;
 
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Data
+@Builder
+@AllArgsConstructor
+@RequiredArgsConstructor
+@NoArgsConstructor
 @ToString
+@Entity
 @Table(name="CURRENCY")
 public class Currency{
     @Id
@@ -20,16 +24,4 @@ public class Currency{
     @OneToMany(fetch = FetchType.EAGER, mappedBy="currency", cascade = CascadeType.ALL)
     @Fetch(value= FetchMode.SELECT)
     private List<Rate> rates;
-
-    public Currency(){
-    }
-
-    public Currency(String sourceCurrency, String targetCurrency){
-        this.sourceCurrency = sourceCurrency;
-        this.targetCurrency = targetCurrency;
-    }
-
-    public List<Rate> getRates(){
-        return rates;
-    }
 }

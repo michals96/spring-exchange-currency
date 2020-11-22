@@ -1,10 +1,15 @@
 package com.currencyexchange.entities;
 
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
+@Data
+@Builder
+@AllArgsConstructor
+@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="RATE")
 public class Rate {
@@ -20,20 +25,6 @@ public class Rate {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="currency_id", nullable=false)
     private Currency currency;
-
-    public Double getRate(){
-        return this.rate;
-    }
-
-    public Rate(){
-    }
-
-    public Rate(String sourceCurrency, String targetCurrency, Double rate, LocalDate date){
-        this.sourceCurrency = sourceCurrency;
-        this.targetCurrency = targetCurrency;
-        this.rate = rate;
-        this.date = date;
-    }
 
     public Rate(String sourceCurrency, String targetCurrency, Double rate, LocalDate date, Currency currency){
         this.sourceCurrency = sourceCurrency;

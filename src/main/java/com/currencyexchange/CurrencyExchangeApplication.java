@@ -64,7 +64,7 @@ public class CurrencyExchangeApplication implements CommandLineRunner {
 
 		currencyRepository.save(firstCurrency);
 
-		rateRepository.save(new Rate("USD", "PLN", 3.8, LocalDate.now(), firstCurrency));
+		rateRepository.save(new Rate("USD", "PLN", 3.8, LocalDate.parse("2017-02-16"), firstCurrency));
 		rateRepository.save(new Rate("USD", "PLN", 3.7, LocalDate.now(), firstCurrency));
 
 		/*for (Currency currency : currencyRepository.findAll()) {
