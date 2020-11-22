@@ -32,6 +32,7 @@ public class CurrencyExchangeController {
         return !ratesRepository.findByCurrenciesAndDate(sourceCurrency, targetCurrency, date).isEmpty();
     }
 
+    // do usuniecia - mozna bezposrednio z repozytorium skorzystac
     public Double fetchRate(String sourceCurrency, String targetCurrency, LocalDate date){
         return ratesRepository.findByCurrenciesAndDate(sourceCurrency, targetCurrency, date).get(0).getRate();
     }
@@ -53,20 +54,25 @@ public class CurrencyExchangeController {
                                                 @PathVariable String sourceCurrency,
                                                              @PathVariable String targetCurrency,
                                                              @PathVariable Double amount) throws Exception {
+        // ten if else to repozytorium
         if(ratesExistsInDatabase(sourceCurrency, targetCurrency, LocalDate.now())){
-            System.out.println("RATES EXISTS IN DATABASE");
+
             Double rate = fetchRate(sourceCurrency, targetCurrency, LocalDate.now());
             Double convertedAmount = amount * rate;
             return new CurrencyExchange(0, sourceCurrency, targetCurrency, 100.0, convertedAmount, rate, LocalDate.now());
         }
         else{
-            System.out.println("RATES DOES NOT EXIST IN DATABASE");
+
             CurrencyExchange currencyExchange = currencyExchangeService.convertWithApi(sourceCurrency, targetCurrency, amount, Class.forName("com.currencyexchange.repositories." + serviceType));
             addRatesToDatabase(currencyExchange);
             return currencyExchange;
         }
+        // tutaj jeden return zamiast dwoch w instrukcji if else
     }
 }
 
 // Example invocation: http://localhost:8080/currencyExchangeApi/JavaCurrencyExchangeRepository/USD/GBP/100.0
 // DB Access: http://localhost:8080/h2-console
+
+// Tabela do currencies(statycznie zawiera wszystkie waluty które ja zezwalam, jesli nie ma to exceptiem) -> w tabeli Rates przetrzymywać ID currency
+// Zapytanie do bazy/do api @Transactional na poziomie serwisu który korzysta z dwóch różnych repozytoriów
