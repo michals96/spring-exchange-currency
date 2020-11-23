@@ -1,24 +1,24 @@
 package com.currencyexchange.controllers;
 
 import com.currencyexchange.entities.CurrencyExchange;
+import com.currencyexchange.entities.Rate;
 import com.currencyexchange.repositories.RateRepository;
 import com.currencyexchange.services.CurrencyExchangeService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
 public class CurrencyExchangeController {
 
     private final CurrencyExchangeService currencyExchangeService;
-    private final RateRepository ratesRepository;
 
-    public CurrencyExchangeController(CurrencyExchangeService currencyExchangeService, RateRepository ratesRepository)
+    public CurrencyExchangeController(CurrencyExchangeService currencyExchangeService)
     {
         this.currencyExchangeService = currencyExchangeService;
-        this.ratesRepository = ratesRepository;
     }
 
     @GetMapping(value = "/currencyExchangeNoApi/{sourceCurrency}/{targetCurrency}/{amount}")
