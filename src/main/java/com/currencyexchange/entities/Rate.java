@@ -23,7 +23,7 @@ public class Rate {
     @NonNull
     private LocalDate date;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="currency_id", nullable=false)
+    @JoinColumn(name="currency_id")
     private Currency currency;
 
     public Rate(String sourceCurrency, String targetCurrency, Double rate, LocalDate date, Currency currency){

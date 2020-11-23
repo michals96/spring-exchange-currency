@@ -3,6 +3,7 @@ package com.currencyexchange.repositories;
 import com.currencyexchange.entities.Currency;
 import com.currencyexchange.entities.Rate;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -14,9 +15,11 @@ import java.util.List;
 
 public interface RateRepository extends CrudRepository<Rate, Long> {
 
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO RATE VALUES (?1, ?2, ?3, ?4, ?5, ?6)", nativeQuery = true)
+    void insertRate(long id, String date, Double rate, String sourceCurrency, String targetCurrency, long currency_id);
 
-    //@Query("INSERT INTO RATE (DATE, RATE, SOURCE_CURRENCY, TARGET_CURRENCY, CURRENCY_ID) VALUES ('2017-02-16', 3.8, 'USD', 'GBP', 1)")
-    //void insertRate();
     @Query("SELECT u FROM Rate u WHERE u.sourceCurrency = ?1 and u.targetCurrency = ?2 and u.date = ?3")
     List<Rate> findByCurrenciesAndDate(String sourceCurrency, String targetCurrency, LocalDate date);
 
@@ -29,5 +32,4 @@ public interface RateRepository extends CrudRepository<Rate, Long> {
     public void insertRateWithEntityManager(Rate rate){
         this.entityManager.persist(rate);
     }*/
-
 }

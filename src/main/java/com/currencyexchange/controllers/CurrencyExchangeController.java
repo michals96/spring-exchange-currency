@@ -46,8 +46,7 @@ public class CurrencyExchangeController {
     }
 }
 
-// Example invocation: http://localhost:8080/currencyExchangeSelectedApi/JavaCurrencyExchangeRepository/USD/GBP/100.0
+// Example invocation:
+// a) http://localhost:8080/currencyExchangeSelectedApi/JavaCurrencyExchangeRepository/USD/GBP/100.0
+// b) http://localhost:8080/currencyExchangeNoApi/USD/PLN/100.0
 // DB Access: http://localhost:8080/h2-console
-
-// Tabela do currencies(statycznie zawiera wszystkie waluty które ja zezwalam, jesli nie ma to exceptiem) -> w tabeli Rates przetrzymywać ID currency
-// Zapytanie do bazy/do api @Transactional na poziomie serwisu który korzysta z dwóch różnych repozytoriów
