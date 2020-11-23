@@ -1,7 +1,6 @@
 package com.currencyexchange.controllers;
 
 import com.currencyexchange.entities.CurrencyExchange;
-import com.currencyexchange.entities.Rate;
 import com.currencyexchange.repositories.RateRepository;
 import com.currencyexchange.services.CurrencyExchangeService;
 import org.springframework.web.bind.annotation.GetMapping;
