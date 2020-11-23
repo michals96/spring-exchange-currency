@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
@@ -21,17 +20,6 @@ public class CurrencyExchangeController {
     {
         this.currencyExchangeService = currencyExchangeService;
         this.ratesRepository = ratesRepository;
-    }
-
-    public void addRatesToDatabase(CurrencyExchange currencyExchange){
-        ratesRepository.save(new Rate(currencyExchange.getFirstCurrency(), currencyExchange.getSecondCurrency(), currencyExchange.getFactor(), currencyExchange.getDate()));
-    }
-
-
-
-    // do usuniecia - mozna bezposrednio z repozytorium skorzystac
-    public Double fetchRate(String sourceCurrency, String targetCurrency, LocalDate date){
-        return ratesRepository.findByCurrenciesAndDate(sourceCurrency, targetCurrency, date).get(0).getRate();
     }
 
     @GetMapping(value = "/currencyExchangeNoApi/{sourceCurrency}/{targetCurrency}/{amount}")
@@ -56,19 +44,9 @@ public class CurrencyExchangeController {
                                                 @PathVariable String sourceCurrency,
                                                              @PathVariable String targetCurrency,
                                                              @PathVariable Double amount) throws Exception {
-        // ten if else to repozytorium
-       /* if(ratesExistsInDatabase(sourceCurrency, targetCurrency, LocalDate.now())){
-
-            Double rate = fetchRate(sourceCurrency, targetCurrency, LocalDate.now());
-            Double convertedAmount = amount * rate;
-            return new CurrencyExchange(0, sourceCurrency, targetCurrency, 100.0, convertedAmount, rate, LocalDate.now());
-        }
-        else{*/
 
             CurrencyExchange currencyExchange = currencyExchangeService.convertWithApi(sourceCurrency, targetCurrency, amount, Class.forName("com.currencyexchange.repositories." + serviceType));
-            //addRatesToDatabase(currencyExchange);
             return currencyExchange;
-        //}
     }
 }
 

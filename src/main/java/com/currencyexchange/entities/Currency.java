@@ -21,7 +21,7 @@ public class Currency{
     private long id;
     @NonNull
     private String sourceCurrency, targetCurrency;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="currency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="currency", cascade = CascadeType.ALL)
     @Fetch(value= FetchMode.SELECT)
     private List<Rate> rates;
 }
