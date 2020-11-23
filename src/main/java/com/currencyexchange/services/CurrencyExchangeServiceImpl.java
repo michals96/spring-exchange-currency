@@ -81,7 +81,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         // CAUSES TIMEOUT!
         // rateRepository.save(new Rate(sourceCurrency, targetCurrency, Double.parseDouble(factor.toString()), LocalDate.now()));
-
+        //rateRepository.insertRate();
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
 
