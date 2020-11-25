@@ -16,8 +16,9 @@ public class Rate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    // id dla kazdej currency
     @NonNull
-    private String sourceCurrency, targetCurrency;
+    private String sourceCurrency, targetCurrency; // oba typu Currency
     @NonNull
     private Double rate;
     @NonNull

@@ -8,6 +8,7 @@ import com.currencyexchange.repositories.CurrencyRepository;
 import com.currencyexchange.repositories.RateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ClassUtils;
 
 import javax.money.NumberValue;
@@ -30,9 +31,6 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         this.currencyRepository = currencyRepository;
         this.rateRepository = rateRepository;
     }
-    private Currency getValidCurrency(String sourceCurrency, String targetCurrency){
-        return currencyRepository.findByCurrencies(sourceCurrency, targetCurrency);
-    }
 
     private Rate fetchRate(List<Rate> ratesList) {
         for(Rate rate: ratesList){
@@ -51,11 +49,13 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
-
+    // Tutaj transactional
+    @Transactional//(isolation = )
     @Override
     public CurrencyExchange monetaryConvert(String sourceCurrency, String targetCurrency, Double amount) {
 
-        Currency validCurrency = getValidCurrency(sourceCurrency, targetCurrency);
+        // tu powinnismy zwracac rate + data
+        Currency validCurrency = currencyRepository.findByCurrencies(sourceCurrency, targetCurrency);
 
         try{
             if(validCurrency == null){
@@ -65,6 +65,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
             e.printStackTrace();
         }
 
+        // nazewnictwo
         List<Rate> ratesList = validCurrency.getRates();
 
         if(!ratesList.isEmpty()){
@@ -78,6 +79,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         NumberValue factor = this.repositories.get(1).calculate(sourceCurrency, targetCurrency);
         Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
+
 
         //rateRepository.save(new Rate(sourceCurrency, targetCurrency, Double.parseDouble(factor.toString()), LocalDate.now()));
 

@@ -16,6 +16,8 @@ import java.util.List;
 @Entity
 @Table(name="CURRENCY")
 public class Currency{
+    // na poziomie konstruktora weryfikacja stringa ktory dostajemy
+    // np enum
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
