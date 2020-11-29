@@ -59,7 +59,7 @@ public class CurrencyExchangeApplication implements CommandLineRunner {
 		});
 	}
 
-	public void fillCurrenciesTable(){
+	public void fillCurrenciesTable() throws Exception {
 		Currency firstCurrency = new Currency("USD", "PLN");
 
 		currencyRepository.save(firstCurrency);

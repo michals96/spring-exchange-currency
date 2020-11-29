@@ -73,8 +73,8 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         NumberValue factor = this.repositories.get(1).calculate(sourceCurrency, targetCurrency);
         Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
 
-
-        //rateRepository.save(new Rate(sourceCurrency, targetCurrency, Double.parseDouble(factor.toString()), LocalDate.now()));
+        // TO DO: Fix this timeout - API related issue
+        // rateRepository.save(new Rate(sourceCurrency, targetCurrency, Double.parseDouble(factor.toString()), LocalDate.now()));
 
         rateRepository.insertRate(3, LocalDate.now().toString(), Double.parseDouble(factor.toString()), sourceCurrency, targetCurrency, 1);
 
