@@ -15,15 +15,9 @@ import java.util.List;
 
 public interface RateRepository extends CrudRepository<Rate, Long> {
 
-    @Modifying //w serwisie
+    @Modifying // Could be done by regular save() method
     @Query(value = "INSERT INTO RATE VALUES (?1, ?2, ?3, ?4, ?5, ?6)", nativeQuery = true)
     void insertRate(long id, String date, Double rate, String sourceCurrency, String targetCurrency, long currency_id);
-    /*
-    {
-        a) Create new rate object
-        b) do rateRepository.save(object) -> ale tego nie trzeba bo metoda jest transactional
-    }
-     */
 
     @Query("SELECT u FROM Rate u WHERE u.sourceCurrency = ?1 and u.targetCurrency = ?2 and u.date = ?3")
     List<Rate> findByCurrenciesAndDate(String sourceCurrency, String targetCurrency, LocalDate date);
@@ -37,5 +31,4 @@ public interface RateRepository extends CrudRepository<Rate, Long> {
     public void insertRateWithEntityManager(Rate rate){
         this.entityManager.persist(rate);
     }*/
-    // TA IMPLEMENTACJA WYRZUCONA DO SERWISU????
 }

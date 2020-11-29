@@ -24,21 +24,14 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     private final List<CurrencyExchangeRepository> repositories;
     private final CurrencyRepository currencyRepository;
     private final RateRepository rateRepository;
+    private final RateService rateService;
 
     @Autowired
-    CurrencyExchangeServiceImpl(List<CurrencyExchangeRepository> currencyExchangeRepository, CurrencyRepository currencyRepository, RateRepository rateRepository) {
+    CurrencyExchangeServiceImpl(List<CurrencyExchangeRepository> currencyExchangeRepository, CurrencyRepository currencyRepository, RateRepository rateRepository, RateService rateService) {
         this.repositories = currencyExchangeRepository;
         this.currencyRepository = currencyRepository;
         this.rateRepository = rateRepository;
-    }
-
-    private Rate fetchRate(List<Rate> ratesList) {
-        for(Rate rate: ratesList){
-            if(rate.getDate().toString().equals(LocalDate.now().toString())){
-                return rate;
-            }
-        }
-        return null;
+        this.rateService = rateService;
     }
 
     @Override
@@ -49,7 +42,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
-    // Tutaj transactional
+    // Tutaj transactional i pobieramy z bazy/wrzucamy do bazy
     @Transactional//(isolation = )
     @Override
     public CurrencyExchange monetaryConvert(String sourceCurrency, String targetCurrency, Double amount) {
@@ -70,7 +63,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         if(!ratesList.isEmpty()){
 
-            Rate rate = fetchRate(ratesList);
+            Rate rate = rateService.fetchRate(ratesList);
 
             if(rate != null){
                 return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, rate.getRate() * amount, rate.getRate(), LocalDate.now());
