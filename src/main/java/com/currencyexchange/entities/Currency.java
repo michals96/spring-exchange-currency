@@ -15,28 +15,34 @@ import java.util.List;
 @Entity
 @Table(name="CURRENCY")
 public class Currency {
-    //private
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @NonNull
-    private String sourceCurrency, targetCurrency;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "currency", cascade = CascadeType.ALL)
-    @Fetch(value = FetchMode.SELECT)
-    private List<Rate> rates;
+    private String currency;
 
-    public Currency(String sourceCurrency, String targetCurrency) throws Exception {
+    @Fetch(value = FetchMode.SELECT)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sourceCurrency", cascade = CascadeType.ALL)
+    private List<Rate> sourceRates;
+
+    @Fetch(value = FetchMode.SELECT)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "targetCurrency", cascade = CascadeType.ALL)
+    private List<Rate> targetRates;
+
+    public Currency(String sourceCurrency) throws Exception {
         List<String> allowedCurrencies = List.of("USD", "PLN");
 
-        if (allowedCurrencies.contains(sourceCurrency) && allowedCurrencies.contains(targetCurrency)){
-            this.sourceCurrency = sourceCurrency;
-            this.targetCurrency = targetCurrency;
+        if (allowedCurrencies.contains(sourceCurrency)){
+            this.currency = sourceCurrency;
         }
         else{
             throw new Exception("Invalid currency!");
         }
+    }
 
+    @Override
+    public String toString() {
+        return currency;
     }
 }
 

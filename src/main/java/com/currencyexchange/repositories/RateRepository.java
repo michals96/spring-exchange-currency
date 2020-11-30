@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface RateRepository extends CrudRepository<Rate, Long> {
 
-    @Modifying // Could be done by regular save() method
+    /*@Modifying // Could be done by regular save() method
     @Query(value = "INSERT INTO RATE VALUES (?1, ?2, ?3, ?4, ?5, ?6)", nativeQuery = true)
     void insertRate(long id, String date, Double rate, String sourceCurrency, String targetCurrency, long currency_id);
 

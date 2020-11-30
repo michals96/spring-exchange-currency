@@ -43,14 +43,14 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
     // Tutaj transactional i pobieramy z bazy/wrzucamy do bazy
-    @Transactional//(isolation = )
+    //@Transactional//(isolation = )
     @Override
     public CurrencyExchange monetaryConvert(String sourceCurrency, String targetCurrency, Double amount) {
 
         // tu powinnismy zwracac rate + data
-        Currency validCurrency = currencyRepository.findByCurrencies(sourceCurrency, targetCurrency);
+        // Currency validCurrency = currencyRepository.findByCurrency(sourceCurrency, targetCurrency);
 
-        try{
+        /*try{
             if(validCurrency == null){
                 throw new Exception("Invalid currencies!");
             }
@@ -78,7 +78,8 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         rateRepository.insertRate(3, LocalDate.now().toString(), Double.parseDouble(factor.toString()), sourceCurrency, targetCurrency, 1);
 
-        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
+        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());*/
+        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, 10.0, 20.0, LocalDate.now());
     }
 
     @Override
