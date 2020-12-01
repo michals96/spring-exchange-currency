@@ -12,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 @EnableSwagger2
 @SpringBootApplication
 @Slf4j
+@EnableJpaRepositories
 public class CurrencyExchangeApplication implements CommandLineRunner {
 	@Autowired
 	CustomerRepository customerRepository;
@@ -59,13 +61,15 @@ public class CurrencyExchangeApplication implements CommandLineRunner {
 		});
 	}
 
-	public void fillCurrenciesTable(){
-		Currency firstCurrency = new Currency("USD", "PLN");
+	public void fillCurrenciesTable() throws Exception {
+		Currency firstCurrency = new Currency("USD");
+		Currency secondCurrency = new Currency("PLN");
 
 		currencyRepository.save(firstCurrency);
+		currencyRepository.save(secondCurrency);
 
-		rateRepository.save(new Rate("USD", "PLN", 3.8, LocalDate.parse("2017-02-16"), firstCurrency));
-		rateRepository.save(new Rate("USD", "PLN", 3.7, LocalDate.parse("2017-02-17"), firstCurrency));
+		rateRepository.save(new Rate(firstCurrency, secondCurrency, 0.3, LocalDate.parse("2017-02-16")));
+		rateRepository.save(new Rate(secondCurrency, firstCurrency, 3.7, LocalDate.parse("2017-02-17")));
 
 		/*for (Currency currency : currencyRepository.findAll()) {
 			log.info(currency.getRates().get(1).getRate().toString());

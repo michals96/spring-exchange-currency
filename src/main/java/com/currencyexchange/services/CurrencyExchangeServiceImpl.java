@@ -1,8 +1,6 @@
 package com.currencyexchange.services;
 
-import com.currencyexchange.entities.Currency;
 import com.currencyexchange.entities.CurrencyExchange;
-import com.currencyexchange.entities.Rate;
 import com.currencyexchange.repositories.CurrencyExchangeRepository;
 import com.currencyexchange.repositories.CurrencyRepository;
 import com.currencyexchange.repositories.RateRepository;
@@ -24,21 +22,17 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     private final List<CurrencyExchangeRepository> repositories;
     private final CurrencyRepository currencyRepository;
     private final RateRepository rateRepository;
+    private final CurrencyService currencyService;
+    private final RateService rateService;
+
 
     @Autowired
-    CurrencyExchangeServiceImpl(List<CurrencyExchangeRepository> currencyExchangeRepository, CurrencyRepository currencyRepository, RateRepository rateRepository) {
+    CurrencyExchangeServiceImpl(List<CurrencyExchangeRepository> currencyExchangeRepository, CurrencyRepository currencyRepository, RateRepository rateRepository, RateService rateService ,CurrencyService currencyService) {
         this.repositories = currencyExchangeRepository;
         this.currencyRepository = currencyRepository;
         this.rateRepository = rateRepository;
-    }
-
-    private Rate fetchRate(List<Rate> ratesList) {
-        for(Rate rate: ratesList){
-            if(rate.getDate().toString().equals(LocalDate.now().toString())){
-                return rate;
-            }
-        }
-        return null;
+        this.rateService = rateService;
+        this.currencyService = currencyService;
     }
 
     @Override
@@ -49,43 +43,33 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
-    // Tutaj transactional
-    @Transactional//(isolation = )
+
+    @Transactional
     @Override
     public CurrencyExchange monetaryConvert(String sourceCurrency, String targetCurrency, Double amount) {
 
-        // tu powinnismy zwracac rate + data
-        Currency validCurrency = currencyRepository.findByCurrencies(sourceCurrency, targetCurrency);
+        if(currencyService.validConversion(sourceCurrency, targetCurrency)){
+            if(rateService.rateExists(sourceCurrency, targetCurrency)){
 
-        try{
-            if(validCurrency == null){
-                throw new Exception("Invalid currencies!");
+                Double rate = rateService.fetchRate(sourceCurrency, targetCurrency).get(0).getRate();
+                Double convertedAmount = rate * amount;
+
+                return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, rate, LocalDate.now());
             }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+            else{
+                NumberValue factor = this.repositories.get(1).calculate(sourceCurrency, targetCurrency);
+                Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
 
-        // nazewnictwo
-        List<Rate> ratesList = validCurrency.getRates();
-
-        if(!ratesList.isEmpty()){
-
-            Rate rate = fetchRate(ratesList);
-
-            if(rate != null){
-                return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, rate.getRate() * amount, rate.getRate(), LocalDate.now());
+                /* TODO: FIX -> HARDCODED IDS
+                    TO DO: Fix this timeout - API related issue
+                    rateRepository.save(new Rate(sourceCurrency, targetCurrency, Double.parseDouble(factor.toString()), LocalDate.now())); */
+                rateRepository.insertRate(3, LocalDate.now().toString(), Double.parseDouble(factor.toString()), sourceCurrency, targetCurrency, 1, 2);
+                return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
             }
         }
-
-        NumberValue factor = this.repositories.get(1).calculate(sourceCurrency, targetCurrency);
-        Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
-
-
-        //rateRepository.save(new Rate(sourceCurrency, targetCurrency, Double.parseDouble(factor.toString()), LocalDate.now()));
-
-        rateRepository.insertRate(3, LocalDate.now().toString(), Double.parseDouble(factor.toString()), sourceCurrency, targetCurrency, 1);
-
-        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
+        else {
+            throw new java.lang.Error("Invalid currencies");
+        }
     }
 
     @Override

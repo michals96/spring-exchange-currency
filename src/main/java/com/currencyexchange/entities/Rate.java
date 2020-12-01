@@ -16,22 +16,24 @@ public class Rate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    // id dla kazdej currency
-    @NonNull
-    private String sourceCurrency, targetCurrency; // oba typu Currency
     @NonNull
     private Double rate;
     @NonNull
     private LocalDate date;
+    private String sourceCurrencyStr, targetCurrencyStr;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="currency_id")
-    private Currency currency;
+    @JoinColumn(name="source_currency_id")
+    private Currency sourceCurrency;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="target_currency_id")
+    private Currency targetCurrency;
 
-    public Rate(String sourceCurrency, String targetCurrency, Double rate, LocalDate date, Currency currency){
-        this.sourceCurrency = sourceCurrency;
-        this.targetCurrency = targetCurrency;
+    public Rate(Currency sourceCurrency, Currency targetCurrency, Double rate, LocalDate date){
         this.rate = rate;
         this.date = date;
-        this.currency = currency;
+        this.sourceCurrency = sourceCurrency;
+        this.targetCurrency = targetCurrency;
+        this.sourceCurrencyStr = sourceCurrency.toString();
+        this.targetCurrencyStr = targetCurrency.toString();
     }
 }
