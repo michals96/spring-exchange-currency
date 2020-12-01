@@ -24,14 +24,15 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     private final List<CurrencyExchangeRepository> repositories;
     private final CurrencyRepository currencyRepository;
     private final RateRepository rateRepository;
-    private final RateService rateService;
+    private final CurrencyService currencyService;
+
 
     @Autowired
-    CurrencyExchangeServiceImpl(List<CurrencyExchangeRepository> currencyExchangeRepository, CurrencyRepository currencyRepository, RateRepository rateRepository, RateService rateService) {
+    CurrencyExchangeServiceImpl(List<CurrencyExchangeRepository> currencyExchangeRepository, CurrencyRepository currencyRepository, RateRepository rateRepository, CurrencyService currencyService) {
         this.repositories = currencyExchangeRepository;
         this.currencyRepository = currencyRepository;
         this.rateRepository = rateRepository;
-        this.rateService = rateService;
+        this.currencyService = currencyService;
     }
 
     @Override
@@ -43,10 +44,14 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
     // Tutaj transactional i pobieramy z bazy/wrzucamy do bazy
-    //@Transactional//(isolation = )
+    @Transactional //(isolation = )
     @Override
     public CurrencyExchange monetaryConvert(String sourceCurrency, String targetCurrency, Double amount) {
 
+        if(currencyService.validConversion(sourceCurrency, targetCurrency)){
+            System.out.println("WE ARE VALID SIR");
+        }
+        //currencyRepository.f
         // tu powinnismy zwracac rate + data
         // Currency validCurrency = currencyRepository.findByCurrency(sourceCurrency, targetCurrency);
 
