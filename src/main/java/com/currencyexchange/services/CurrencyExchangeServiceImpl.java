@@ -1,8 +1,6 @@
 package com.currencyexchange.services;
 
-import com.currencyexchange.entities.Currency;
 import com.currencyexchange.entities.CurrencyExchange;
-import com.currencyexchange.entities.Rate;
 import com.currencyexchange.repositories.CurrencyExchangeRepository;
 import com.currencyexchange.repositories.CurrencyRepository;
 import com.currencyexchange.repositories.RateRepository;
@@ -46,54 +44,32 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
 
-    @Transactional //(isolation = )
+    @Transactional
     @Override
     public CurrencyExchange monetaryConvert(String sourceCurrency, String targetCurrency, Double amount) {
 
         if(currencyService.validConversion(sourceCurrency, targetCurrency)){
             if(rateService.rateExists(sourceCurrency, targetCurrency)){
-                System.out.println("RATE EXISTS");
+
+                Double rate = rateService.fetchRate(sourceCurrency, targetCurrency).get(0).getRate();
+                Double convertedAmount = rate * amount;
+
+                return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, rate, LocalDate.now());
             }
             else{
-                rateRepository.insertRate(3, LocalDate.now().toString(), 10.0, sourceCurrency, targetCurrency, 1, 2);
+                NumberValue factor = this.repositories.get(1).calculate(sourceCurrency, targetCurrency);
+                Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
+
+                /* TODO: FIX -> HARDCODED IDS
+                    TO DO: Fix this timeout - API related issue
+                    rateRepository.save(new Rate(sourceCurrency, targetCurrency, Double.parseDouble(factor.toString()), LocalDate.now())); */
+                rateRepository.insertRate(3, LocalDate.now().toString(), Double.parseDouble(factor.toString()), sourceCurrency, targetCurrency, 1, 2);
+                return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
             }
         }
         else {
             throw new java.lang.Error("Invalid currencies");
         }
-
-        // Currency validCurrency = currencyRepository.findByCurrency(sourceCurrency, targetCurrency);
-
-        /*try{
-            if(validCurrency == null){
-                throw new Exception("Invalid currencies!");
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        // nazewnictwo
-        List<Rate> ratesList = validCurrency.getRates();
-
-        if(!ratesList.isEmpty()){
-
-            Rate rate = rateService.fetchRate(ratesList);
-
-            if(rate != null){
-                return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, rate.getRate() * amount, rate.getRate(), LocalDate.now());
-            }
-        }
-
-        NumberValue factor = this.repositories.get(1).calculate(sourceCurrency, targetCurrency);
-        Double convertedAmount = Double.parseDouble(factor.toString()) * amount;
-
-        // TO DO: Fix this timeout - API related issue
-        // rateRepository.save(new Rate(sourceCurrency, targetCurrency, Double.parseDouble(factor.toString()), LocalDate.now()));
-
-        rateRepository.insertRate(3, LocalDate.now().toString(), Double.parseDouble(factor.toString()), sourceCurrency, targetCurrency, 1);
-
-        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());*/
-        return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, 10.0, 20.0, LocalDate.now());
     }
 
     @Override

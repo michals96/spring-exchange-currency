@@ -5,6 +5,6 @@ import com.currencyexchange.entities.Rate;
 import java.util.List;
 
 public interface RateService {
-    Rate fetchRate(List<Rate> ratesList);
+    List<Rate> fetchRate(String sourceCurrency, String targetCurrency);
     Boolean rateExists(String sourceCurrency, String targetCurrency);
 }

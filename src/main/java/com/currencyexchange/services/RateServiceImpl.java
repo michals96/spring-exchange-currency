@@ -19,13 +19,8 @@ public class RateServiceImpl implements RateService{
     }
 
     @Override
-    public Rate fetchRate(List<Rate> ratesList) {
-        for(Rate rate: ratesList){
-            if(rate.getDate().toString().equals(LocalDate.now().toString())){
-                return rate;
-            }
-        }
-        return null;
+    public List<Rate> fetchRate(String sourceCurrency, String targetCurrency) {
+        return rateRepository.findByCurrenciesAndDate(sourceCurrency, targetCurrency, LocalDate.now());
     }
 
     @Override
