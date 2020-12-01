@@ -25,13 +25,15 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     private final CurrencyRepository currencyRepository;
     private final RateRepository rateRepository;
     private final CurrencyService currencyService;
+    private final RateService rateService;
 
 
     @Autowired
-    CurrencyExchangeServiceImpl(List<CurrencyExchangeRepository> currencyExchangeRepository, CurrencyRepository currencyRepository, RateRepository rateRepository, CurrencyService currencyService) {
+    CurrencyExchangeServiceImpl(List<CurrencyExchangeRepository> currencyExchangeRepository, CurrencyRepository currencyRepository, RateRepository rateRepository, RateService rateService ,CurrencyService currencyService) {
         this.repositories = currencyExchangeRepository;
         this.currencyRepository = currencyRepository;
         this.rateRepository = rateRepository;
+        this.rateService = rateService;
         this.currencyService = currencyService;
     }
 
@@ -43,16 +45,23 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         return new CurrencyExchange(0, sourceCurrency, targetCurrency, amount, convertedAmount, Double.parseDouble(factor.toString()), LocalDate.now());
     }
-    // Tutaj transactional i pobieramy z bazy/wrzucamy do bazy
+
     @Transactional //(isolation = )
     @Override
     public CurrencyExchange monetaryConvert(String sourceCurrency, String targetCurrency, Double amount) {
 
         if(currencyService.validConversion(sourceCurrency, targetCurrency)){
-            System.out.println("WE ARE VALID SIR");
+            if(rateService.rateExists(sourceCurrency, targetCurrency)){
+                System.out.println("RATE EXISTS");
+            }
+            else{
+                rateRepository.insertRate(3, LocalDate.now().toString(), 10.0, sourceCurrency, targetCurrency, 1, 2);
+            }
         }
-        //currencyRepository.f
-        // tu powinnismy zwracac rate + data
+        else {
+            throw new java.lang.Error("Invalid currencies");
+        }
+
         // Currency validCurrency = currencyRepository.findByCurrency(sourceCurrency, targetCurrency);
 
         /*try{
